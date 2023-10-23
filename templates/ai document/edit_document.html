@@ -1,0 +1,373 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .offcanvas-right {
+        transform: translateX(100%);
+    }
+
+    .custom-width {
+        width: 380px;
+        /* Set your desired width here */
+    }
+
+    .output {
+        grid-column: 1 / -1;
+        background-color: rgba(0, 0, 0, 0.626);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        flex-direction: column;
+        padding: 10px;
+        word-wrap: break-word;
+        word-break: break-all;
+        min-height: 110px;
+    }
+
+    .output .previous-operand {
+        color: gray;
+        font-size: 1.5rem;
+    }
+
+    .output .current-operand {
+        color: white;
+        font-size: 2.5rem;
+    }
+
+    .calculator-keys {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+        padding: 20px;
+    }
+
+    .calculator-keys>button {
+        height: 40px;
+        width: auto;
+        font-size: 18px;
+    }
+
+    .span-two.buttonClass {
+        grid-column: span 2;
+    }
+
+    .buttonClass {
+        font-size: 26px;
+        font-family: Arial;
+        width: 65px;
+        height: 59px;
+        border-width: 1px;
+        color: #fff;
+        border-color: #0c62e496;
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        border-bottom-left-radius: 28px;
+        border-bottom-right-radius: 28px;
+        text-shadow: 1px 1px 0px #0c62e496;
+        background: #0c64e4;
+
+    }
+
+    .buttonClass:hover {
+        background: #073b8ae3
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Second column (will be displayed first on phone displays) -->
+        <div class="col-12 col-md-4 order-2 order-md-1">
+            <textarea style="width: 100%; height: 30%;" name="description"
+                placeholder="Enter your description here..."></textarea>
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseOne">
+                            Other Documents
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                        aria-labelledby="panelsStayOpen-headingOne">
+                        <div class="accordion-body">
+                            <div class="row">
+                                {% for doc in documents_all_user %}
+                                    <div class="col">
+                                        <div class="card" style="width: 16rem;">
+                                            <img src="..." class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <a href="{% url 'edit_document' doc.pk %}">
+                                                    <p class="card-title">{{ doc.title }}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p>empty</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                            Accordion Item #2
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body">
+                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+                            collapse plugin adds the appropriate classes that we use to style each element. These classes
+                            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                            modify any of this with custom CSS or overriding our default variables. It's also worth noting that
+                            just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit
+                            overflow.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                            Accordion Item #3
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body">
+                            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
+                            collapse plugin adds the appropriate classes that we use to style each element. These classes
+                            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                            modify any of this with custom CSS or overriding our default variables. It's also worth noting that
+                            just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit
+                            overflow.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First column (will be displayed second on phone displays) -->
+        <div class="col-12 col-md-8 order-1 order-md-2">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.title.errors }}
+                    {{ form.title }}
+                </div>
+                {{ form.media }}
+                <div class="form-group">
+                    {{ form.content.errors }}
+                    {{ form.content }}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .mb-5 {
+        margin-bottom: 4rem !important;
+        /* This is equivalent to 80px */
+    }
+
+    #transparent-btn {
+        opacity: 0.7;
+    }
+
+    #sidebarRight {
+        width: 25% !important;
+    }
+</style>
+<button class="btn btn-secondary position-fixed bottom-0 end-0 mb-5 me-3" id="transparent-btn" type="button"
+    data-bs-toggle="offcanvas" data-bs-target="#sidebarRight" aria-controls="sidebarRight">
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-caret-left"
+        viewBox="0 0 16 16">
+        <path
+            d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z" />
+    </svg>
+</button>
+<!-- Sidebar Content -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarRight" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+        <h5 id="sidebarLabel">Create task</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="container-fluid full-height">
+            <div class="ccc" style="border: 2px solid black;">
+                <div class="output">
+                    <div data-previous-operand class="previous"></div>
+                    <div data-current-operand class="current-operand"></div>
+                </div>
+                <div class="calculator-keys">
+                    <button class="buttonClass span-two" data-all-clear>AC</button>
+                    <button class="buttonClass" data-delete>DEL</button>
+                    <button class="buttonClass" data-operation>÷</button>
+                    <button class="buttonClass" data-number>1</button>
+                    <button class="buttonClass" data-number>2</button>
+                    <button class="buttonClass" data-number>3</button>
+                    <button class="buttonClass" data-operation>x</button>
+                    <button class="buttonClass" data-number>4</button>
+                    <button class="buttonClass" data-number>5</button>
+                    <button class="buttonClass" data-number>6</button>
+                    <button class="buttonClass" data-operation>+</button>
+                    <button class="buttonClass" data-number>7</button>
+                    <button class="buttonClass" data-number>8</button>
+                    <button class="buttonClass" data-number>9</button>
+                    <button class="buttonClass" data-operation>-</button>
+                    <button class="buttonClass" data-number>.</button>
+                    <button class="buttonClass" data-number>0</button>
+                    <button class="buttonClass span-two" data-equals>=</button>
+                </div>
+            </div>
+            <br>
+            <small style="font-size: smaller;"><b style="color: red;">Advertencia:</b> Notas (Cualquier información
+                introducida aquí no se guardará una vez que se actualice o reinicie la página)</small>
+            <textarea placeholder="Notas (La información aquí no se guarda tras refrescar la página)" id=""
+                style="width: 348px;" rows="10"></textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+    class Calculator {
+        constructor(previousOperandTextElement, currentOperandTextElement) {
+            this.previousOperandTextElement = previousOperandTextElement
+            this.currentOperandTextElement = currentOperandTextElement
+            this.clear()
+        }
+
+        clear() {
+            this.currentOperand = ''
+            this.previousOperand = ''
+            this.operation = undefined
+        }
+
+        delete() {
+            this.currentOperand = this.currentOperand.toString().slice(0, -1)
+        }
+
+        appendNumber(number) {
+            if (number === '.' && this.currentOperand.includes('.')) return
+            this.currentOperand = this.currentOperand.toString() + number.toString()
+        }
+
+        chooseOperation(operation) {
+            if (this.currentOperand === '') return
+            if (this.previousOperand !== '') {
+                this.compute()
+            }
+            this.operation = operation
+            this.previousOperand = this.currentOperand
+            this.currentOperand = ''
+        }
+
+        compute() {
+            let computation
+            const prev = parseFloat(this.previousOperand)
+            const current = parseFloat(this.currentOperand)
+            if (isNaN(prev) || isNaN(current)) return
+            switch (this.operation) {
+                case '÷':
+                    computation = prev / current
+                    break
+                case 'x':
+                    computation = prev * current
+                    break
+                case '+':
+                    computation = prev + current
+                    break
+                case '-':
+                    computation = prev - current
+                    break
+                default:
+                    return
+            }
+            this.currentOperand = computation
+            this.operation = undefined
+            this.previousOperand = ''
+        }
+
+        getDisplayNumber(number) {
+            const stringNumber = number.toString()
+            const integerDisplay = parseFloat(stringNumber.split('.')[0])
+            const decimalDigits = stringNumber.split('.')[1]
+            let intigerDisplay
+            if (isNaN(integerDisplay)) {
+                intigerDisplay = ''
+            } else {
+                intigerDisplay = integerDisplay.toLocaleString('en', {
+                    maximumFractionDigits: 0
+                })
+            }
+            if (decimalDigits != null) {
+                return `${intigerDisplay}.${decimalDigits}`
+            } else {
+                return intigerDisplay
+            }
+        }
+
+        updateDisplay() {
+            this.currentOperandTextElement.innerText = this.getDisplayNumber(this.currentOperand)
+            if (this.operation != null) {
+                this.previousOperandTextElement.innerText = `${this.previousOperand} ${this.operation}`;
+            } else {
+                this.previousOperandTextElement.innerText = ''
+            }
+        }
+    }
+
+    const numberButtons = document.querySelectorAll('[data-number]')
+    const operationButtons = document.querySelectorAll('[data-operation]')
+    const equalsButton = document.querySelector('[data-equals]')
+    const deleteButton = document.querySelector('[data-delete]')
+    const allClearButton = document.querySelector('[data-all-clear]')
+    const previousOperandTextElement = document.querySelector('[data-previous-operand]')
+    const currentOperandTextElement = document.querySelector('[data-current-operand]')
+
+    const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+
+    numberButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            calculator.appendNumber(button.innerText)
+            calculator.updateDisplay()
+        })
+    })
+
+    operationButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            calculator.chooseOperation(button.innerText)
+            calculator.updateDisplay()
+        })
+    })
+
+    equalsButton.addEventListener('click', button => {
+        calculator.compute()
+        calculator.updateDisplay()
+    })
+
+    allClearButton.addEventListener('click', button => {
+        calculator.clear()
+        calculator.updateDisplay()
+    })
+
+    deleteButton.addEventListener('click', button => {
+        calculator.delete()
+        calculator.updateDisplay()
+    })
+
+    // dropdown
+    function toggleDropdown() {
+        const dropdownContent = document.getElementById("dropdownContent");
+        dropdownContent.classList.toggle("show");
+    }
+
+</script>
+{% endblock %}

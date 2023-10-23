@@ -1,0 +1,49 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form action="/search/" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..." name="q">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+                <a href="{% url 'create_document' %}">
+                    <div class="btn btn-primary"><i class="bi bi-plus-lg"></i></div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        {% for doc in documents %}
+            <div class="col-3 mb-3">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="..." class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <a href="{% url 'edit_document' doc.pk %}">
+                                    <h5 class="card-title">{{ doc.title }}</h5>
+                                </a>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text"><small class="text-muted">{{ doc.updated_at }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>empty</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -30,9 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-SITE_ID = 2
+SITE_ID = 3
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,12 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',  # For Google authentication
+
     'tinymce',
+    'ckeditor',
+    'ckeditor_uploader',
     'write_ai',
 ]
 
@@ -61,6 +64,16 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 800,
+        'width': '128%', 
+    },
+}
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

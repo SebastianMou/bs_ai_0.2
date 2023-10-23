@@ -1,0 +1,29 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Second column (will be displayed first on phone displays) -->
+        <div class="col-12 col-md-4 order-2 order-md-1">
+            <textarea style="width: 100%; height: 40%;" name="description" placeholder="Enter your description here..."></textarea>
+        </div>
+        <!-- First column (will be displayed second on phone displays) -->
+        <div class="col-12 col-md-8 order-1 order-md-2">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.title.errors }}
+                    {{ form.title }}
+                </div>
+                {{ form.media }}
+                <div class="form-group">
+                    {{ form.content.errors }}
+                    {{ form.content }}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

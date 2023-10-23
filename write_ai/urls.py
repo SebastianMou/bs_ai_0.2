@@ -22,6 +22,12 @@ urlpatterns = [
     path('delete_task/<int:pk>/', views.delete_task, name='delete_task'),
     path('edit_task/<int:pk>/', views.edit_task, name='edit_task'),
 
+    # Docuemtns
+    path('ai_documents/', views.ai_documents, name='ai_documents'),
+    path('create_document/', views.create_document, name='create_document'),
+    path('edit_document/<int:pk>/', views.edit_document, name='edit_document'),
+    path('view_document/<int:pk>/', views.view_document, name='view_document'),
+
     # Forgoten password
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name='auth/password_reset.html'), name="password_reset"),
     path('password_reset_sent/', auth_views.PasswordResetDoneView.as_view(template_name='auth/password_reset_done.html'), name='password_reset_done'),

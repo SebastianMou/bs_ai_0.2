@@ -3,8 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import PasswordInput
 from tinymce.widgets import TinyMCE
+from ckeditor.widgets import CKEditorWidget
 
-from .models import Task
+from .models import Task, Document
+from ckeditor.fields import RichTextFormField
 
 class UserRegisterForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={
@@ -56,3 +58,15 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'completion_time', 'description']
+
+class DocumentForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Document Title',
+    }))
+    content = forms.CharField(widget=CKEditorWidget())
+
+    class Meta:
+        model = Document
+        fields = ['title', 'content']
+

@@ -59,7 +59,7 @@
                                 <input type="submit" value="Register Account" class="btn btn-primary btn-user btn-block">
                                  
                                 <hr>
-                                
+                                <!-- {% provider_login_url 'google' %?next=/ -->
                                 <a href="{% provider_login_url 'google' %}?next=/">Login With Google</a>
 
                                 <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
@@ -85,13 +85,13 @@
 
     </div>
 
-    <!-- <script>
+    <script>
         function openGoogleLoginPopup() {
             var width = 600;
             var height = 600;
             var left = (screen.width - width) / 2;
             var top = (screen.height - height) / 2;
-            var url = "{% provider_login_url 'google' %}";
+            var url = "{% provider_login_url 'google' %";
             var opts = 'status=1' +
                 ',width=' + width +
                 ',height=' + height +
@@ -99,8 +99,7 @@
                 ',left=' + left;
             window.open(url, 'googleLogin', opts);
         }
-
-    </script> -->
+    </script>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

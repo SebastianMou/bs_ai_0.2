@@ -11,13 +11,10 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import requires_csrf_token
-from django.core.files.storage import FileSystemStorage
-from django.http import JsonResponse
 
-from .forms import UserRegisterForm, TaskForm
+from .forms import UserRegisterForm, TaskForm, DocumentForm
 from .tokens import account_activation_token
-from .models import Task
+from .models import Task, Document
 
 # Create your views here.
 def home(request):
@@ -33,19 +30,19 @@ def img_gen(request):
     return render(request, 'main_page/img_gen.html')
 
 def tasks(request):
-    # all_tasks = Task.objects.order_by('position')
-    # tasks = all_tasks.filter(owner=request.user)
-    # task_count = tasks.count()
+    all_tasks = Task.objects.order_by('position')
+    tasks = all_tasks.filter(owner=request.user)
+    task_count = tasks.count()
 
-    # status_counts = {}
-    # for status, _ in Task.STATUS_CHOICES:
-    #     status_counts[status] = tasks.filter(status=status).count()
+    status_counts = {}
+    for status, _ in Task.STATUS_CHOICES:
+        status_counts[status] = tasks.filter(status=status).count()
 
-    # context = {
-    #     'tasks': tasks,
-    #     'task_count': task_count,
-    #     'status_counts': status_counts,
-    # }
+    context = {
+        'tasks': tasks,
+        'task_count': task_count,
+        'status_counts': status_counts,
+    }
     return render(request, 'main_page/tasks.html')
 
 def user_login(request):
@@ -263,6 +260,58 @@ def edit_task(request, pk):
         'task': task,
     }
     return render(request, 'task/edit_task.html', context)
+
+@login_required
+def ai_documents(request):
+    documents = Document.objects.filter(owner=request.user)
+    context = {
+        'documents': documents
+    }
+    return render(request, 'main_page/ai_documents.html', context)
+
+@login_required
+def create_document(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.owner = request.user
+            document.save()
+            return redirect('ai_documents')
+    else:
+        form = DocumentForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'ai document/create_document.html', context)
+
+@login_required
+def edit_document(request, pk):
+    document = get_object_or_404(Document, id=pk, owner=request.user)
+    documents_all_user = Document.objects.filter(owner=request.user)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, instance=document)
+        if form.is_valid():
+            form.save()
+            return redirect('ai_documents')  # Ensure 'tasks' is a valid redirect URL name
+    else:
+        form = DocumentForm(instance=document) 
+
+    context = {
+        'form': form,
+        'document': document,
+        'documents_all_user': documents_all_user,
+    }
+    return render(request, 'ai document/edit_document.html', context)
+
+def view_document(request, pk):
+    document_view = get_object_or_404(Document, id=pk, owner=request.user)
+    context = {
+        'document_view': document_view,
+    }
+    return render(request, 'ai document/view_document.html', context)
+
 
 def public_privacy_policy(request):
     return render(request, 'legal/public_privacy_policy.html')
