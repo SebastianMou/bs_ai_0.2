@@ -72,13 +72,46 @@
     .buttonClass:hover {
         background: #073b8ae3
     }
+
+    .parent-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #document-container {
+        width: 75%;
+        /* Fixed width */
+        height: 550px;
+        /* Fixed height */
+        overflow: auto;
+        /* Add scrollbars if content overflows */
+        border: solid 2px gray;
+    }
+
+    #zoom-content {
+        transition: transform 0.3s ease;
+        transform-origin: top left;
+    }
+
+    #zoom_and_out_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+    }
+
+    #zoom_and_out_btn button {
+        padding: 8px 16px;
+        /* Adjust the values as needed */
+        margin-right: 8px;
+        /* Add space to the right of each button */
+    }
 </style>
 <div class="container-fluid">
     <div class="row">
         <!-- Second column (will be displayed first on phone displays) -->
         <div class="col-12 col-md-4 order-2 order-md-1">
-            <textarea style="width: 100%; height: 30%;" name="description"
-                placeholder="Enter your description here..."></textarea>
             <div class="accordion" id="accordionPanelsStayOpenExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -91,22 +124,7 @@
                     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
                         aria-labelledby="panelsStayOpen-headingOne">
                         <div class="accordion-body">
-                            <div class="row">
-                                {% for doc in documents_all_user %}
-                                    <div class="col">
-                                        <div class="card" style="width: 16rem;">
-                                            <img src="..." class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <a href="{% url 'edit_document' doc.pk %}">
-                                                    <p class="card-title">{{ doc.title }}</p>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% empty %}
-                                    <p>empty</p>
-                                {% endfor %}
-                            </div>
+                            <p>test this thing</p>
                         </div>
                     </div>
                 </div>
@@ -118,15 +136,61 @@
                             Accordion Item #2
                         </button>
                     </h2>
-                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse overflow-auto"
                         aria-labelledby="panelsStayOpen-headingTwo">
-                        <div class="accordion-body">
-                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These classes
-                            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                            modify any of this with custom CSS or overriding our default variables. It's also worth noting that
-                            just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit
-                            overflow.
+                        <div class="accordion-body" style="height: 799px;">
+                            <div class="parent-div">
+                                <div class="overflow-auto" id="document-container">
+                                    <div class="container" id="zoom-content">
+                                        <!-- Content to be zoomed in and out -->
+                                        <!-- Other content -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="zoom_and_out_btn" class="my-3">
+                                <button class="btn btn-primary btn-sm mx-1" onclick="zoomIn()">
+                                    <i class="bi bi-zoom-in"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm mx-1" onclick="zoomOut()">
+                                    <i class="bi bi-zoom-out"></i>
+                                </button>
+                                <a href="">
+                                    <button class="btn btn-primary btn-sm mx-1">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </a>
+                                
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for doc in documents_all_user %}
+                                            <tr>
+                                                <td><img src="..." class="img-fluid" alt="..."></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" onclick="loadDocument({{ doc.pk }})">
+                                                        {{ doc.title }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <small>{{ doc.created_at }}</small>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="2">No documents available</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,10 +206,14 @@
                         aria-labelledby="panelsStayOpen-headingThree">
                         <div class="accordion-body">
                             <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These classes
-                            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                            modify any of this with custom CSS or overriding our default variables. It's also worth noting that
-                            just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit
+                            collapse plugin adds the appropriate classes that we use to style each element. These
+                            classes
+                            control the overall appearance, as well as the showing and hiding via CSS transitions. You
+                            can
+                            modify any of this with custom CSS or overriding our default variables. It's also worth
+                            noting that
+                            just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                            does limit
                             overflow.
                         </div>
                     </div>
@@ -235,7 +303,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     class Calculator {
         constructor(previousOperandTextElement, currentOperandTextElement) {
@@ -369,5 +437,30 @@
         dropdownContent.classList.toggle("show");
     }
 
+    function loadDocument(pk) {
+        $.ajax({
+            url: `/view_document/${pk}/`,  // Update with the correct path
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#zoom-content').html(data.content);  // Change this line
+            },
+            error: function (error) {
+                console.log('Error:', error);
+            }
+        });
+    }
+
+    var currentScale = 1;
+
+    function zoomIn() {
+        currentScale += 0.1;
+        document.getElementById('zoom-content').style.transform = 'scale(' + currentScale + ')';
+    }
+
+    function zoomOut() {
+        currentScale -= 0.1;
+        document.getElementById('zoom-content').style.transform = 'scale(' + currentScale + ')';
+    }
 </script>
 {% endblock %}

@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .forms import UserRegisterForm, TaskForm, DocumentForm
 from .tokens import account_activation_token
@@ -307,11 +308,15 @@ def edit_document(request, pk):
 
 def view_document(request, pk):
     document_view = get_object_or_404(Document, id=pk, owner=request.user)
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = {'content': document_view.content}
+        return JsonResponse(data)
+    
     context = {
         'document_view': document_view,
     }
     return render(request, 'ai document/view_document.html', context)
-
 
 def public_privacy_policy(request):
     return render(request, 'legal/public_privacy_policy.html')
